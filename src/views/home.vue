@@ -4,6 +4,7 @@
             <el-aside width="auto">
                 <!-- <div class="logo"></div> -->
                 <el-menu
+                :router="true"
                 :collapse="isCollapse"
                 default-active="2"
                 background-color="#545c64"
