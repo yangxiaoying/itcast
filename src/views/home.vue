@@ -4,9 +4,11 @@
             <el-aside width="auto">
                 <!-- <div class="logo"></div> -->
                 <el-menu
+                default-active="/user"
                 :router="true"
                 :collapse="isCollapse"
-                default-active="2"
+                :unique-opened="true"
+                class="el-menu-admin"
                 background-color="#545c64"
                 text-color="#fff"
                 active-text-color="#ffd04b">
@@ -15,25 +17,33 @@
                         <i class="myicon myicon-user"></i>
                         <span>用户管理</span>
                     </template>
-                    <el-submenu index="2">
-                        <template slot="title">
-                            <i class="el-icon-location"></i>
-                            <span>用户列表</span>
-                        </template>
-                    </el-submenu>
+                    <el-menu-item index="/user">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">用户列表</span>
+                    </el-menu-item>
                 </el-submenu>
-                <el-menu-item index="3">
-                    <i class="myicon myicon-cog"></i>
-                    <span slot="title">权限管理</span>
-                </el-menu-item>
+                <el-submenu index="2">
+                    <template slot="title">
+                        <i class="myicon myicon-cog"></i>
+                        <span>权限管理</span>
+                    </template>
+                    <el-menu-item index="/right">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">权限列表</span>
+                    </el-menu-item>
+                    <el-menu-item index="/role">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">角色列表</span>
+                    </el-menu-item>
+                </el-submenu>
                 </el-menu>
             </el-aside>
             <el-container>
                 <el-header>
-                    <i class="myicon myicon-menu toggle-btn" @click="collapseMenu"></i>
+                    <i class="myicon myicon-menu toggle-btn" @click="toggleMenu"></i>
                     <h2 class="system-title">后台管理系统</h2>
                     <div>
-                        <span class="welcome">您好，***</span>
+                        <span class="welcome">您好，{{$store.state.username}}</span>
                         <el-button type="text">退出</el-button>
                     </div>
                 </el-header>
@@ -51,8 +61,8 @@ export default {
             isCollapse: false
         };
     },
-    methods: {
-        collapseMenu(){
+    methods:{
+        toggleMenu(){
             this.isCollapse = !this.isCollapse;
         }
     }

@@ -42,11 +42,12 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     checkUser(this.ruleForm).then(res => {
-                        console.log(res)
                         if(res.meta.status==200){
                             //登录成功
-                            localStorage.setItem('mytoken',res.data.token)
-                            this.$router.push({'name':'Home'})
+                            localStorage.setItem('mytoken', res.data.token)
+                            localStorage.setItem('username', res.data.username)
+                            this.$store.commit('getUserName');
+                            this.$router.push({name:'home'});
                         }else{
                             this.$message.error(res.meta.msg);
                         }
