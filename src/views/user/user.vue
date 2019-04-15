@@ -6,8 +6,8 @@
             <el-breadcrumb-item>用户列表</el-breadcrumb-item>
         </el-breadcrumb>
         <div style="margin: 15px 0;">
-            <el-input placeholder="请输入内容" v-model="searchword" @keydown.native.enter="initUserList" class="search-input">
-                <el-button slot="append" icon="el-icon-search" @click="initUserList"></el-button>
+            <el-input placeholder="请输入内容" v-model="searchword" @keydown.native.enter="initList" class="search-input">
+                <el-button slot="append" icon="el-icon-search" @click="initList"></el-button>
             </el-input>
             <el-button type="success" plain @click="addDialogFormVisible = true">添加用户</el-button>
         </div>
@@ -101,7 +101,7 @@
         <el-dialog title="编辑用户" :visible.sync="editDialogFormVisible">
             <el-form :model="editForm" :rules="rules" ref="editRuleForm" label-width="120px">
                 <el-form-item prop="username" label="用户名">
-                    <el-input v-model="editForm.username"></el-input>
+                    <el-input v-model="editForm.username" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item prop="email" label="邮箱">
                     <el-input v-model="editForm.email"></el-input>
@@ -124,7 +124,7 @@
                 </el-form-item>
                 <el-form-item label="请选择角色：">
                     <el-select v-model="roleId" placeholder="请选择角色">
-                        <el-option v-for="role in roleList" :key="item.id" :label="role.roleName" :value="role.id"></el-option>
+                        <el-option v-for="role in roleList" :key="role.id" :label="role.roleName" :value="role.id"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -182,11 +182,11 @@ export default {
             }
         };
     },
-    mounted(){
-        this.initUserList();
+    created(){
+        this.initList();
     },
     methods: {
-        initUserList(){
+        initList(){
             this.loading = true;
             let params= {query:this.searchword,pagenum:this.pagenum,pagesize:this.pagesize}
             getUserList({params:params}).then(res => {
@@ -199,11 +199,11 @@ export default {
         },
         handleCurrentChange(val) {
             this.pagenum = val;
-            this.initUserList();
+            this.initList();
         },
         handleSizeChange(val) {
             this.pagesize = val;
-            this.initUserList();
+            this.initList();
         },
         // 修改用户状态
         changeUserState(row){
@@ -223,7 +223,7 @@ export default {
                         if(res.meta.status==201){
                             this.$message.success('添加用户成功');
                             this.addDialogFormVisible = false;
-                            this.initUserList();
+                            this.initList();
                             for(var i in this.addForm){
                                 this.addForm[i]=''
                             }
@@ -238,7 +238,6 @@ export default {
         showEditDialog(row){
             this.editDialogFormVisible = true;
             getUserById(row.id).then(res => {
-                console.log(res)
                 if(res.meta.status == 200){
                     this.editForm.id = res.data.id;
                     this.editForm.username = res.data.username;
@@ -257,7 +256,7 @@ export default {
                         if(res.meta.status==200){
                             this.$message.success('修改成功');
                             this.editDialogFormVisible = false;
-                            this.initUserList();
+                            this.initList();
                         }else{
                             this.$message.error(res.meta.msg);
                         }
@@ -275,7 +274,7 @@ export default {
                     deleteUser(row.id).then(res => {
                         if(res.meta.status == 200){
                             this.$message.success(res.meta.msg);
-                            this.initUserList();
+                            this.initList();
                         }else{
                             this.$message.error(res.meta.msg);
                         }
@@ -296,8 +295,8 @@ export default {
         },
         // 分配用户角色提交
         grantSubmitForm(){
-            if(!this.role) return;
-            grantUserRole({id:this.grantForm.id,rid:this.role}).then(res => {
+            if(!this.roleId) return;
+            grantUserRole({id:this.grantForm.id,rid:this.roleId}).then(res => {
                 if(res.meta.status == 200){
                     this.$message.success('设置角色成功');
                     this.grantDialogFormVisible = false;

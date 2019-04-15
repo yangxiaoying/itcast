@@ -4,7 +4,7 @@
             <el-aside width="auto">
                 <!-- <div class="logo"></div> -->
                 <el-menu
-                default-active="/user"
+                default-active="users"
                 :router="true"
                 :collapse="isCollapse"
                 :unique-opened="true"
@@ -12,17 +12,17 @@
                 background-color="#545c64"
                 text-color="#fff"
                 active-text-color="#ffd04b">
-                <el-submenu index="1">
+                <el-submenu :index="item.path" v-for="item in menuList" :key="item.id">
                     <template slot="title">
                         <i class="myicon myicon-user"></i>
-                        <span>用户管理</span>
+                        <span>{{item.authName}}</span>
                     </template>
-                    <el-menu-item index="/user">
+                    <el-menu-item :index="tag.path" v-for="tag in item.children" :key="tag.id">
                         <i class="el-icon-location"></i>
-                        <span slot="title">用户列表</span>
+                        <span slot="title">{{tag.authName}}</span>
                     </el-menu-item>
                 </el-submenu>
-                <el-submenu index="2">
+                <!-- <el-submenu index="2">
                     <template slot="title">
                         <i class="myicon myicon-cog"></i>
                         <span>权限管理</span>
@@ -35,7 +35,7 @@
                         <i class="el-icon-location"></i>
                         <span slot="title">角色列表</span>
                     </el-menu-item>
-                </el-submenu>
+                </el-submenu> -->
                 </el-menu>
             </el-aside>
             <el-container>
@@ -44,7 +44,7 @@
                     <h2 class="system-title">后台管理系统</h2>
                     <div>
                         <span class="welcome">您好，{{$store.state.username}}</span>
-                        <el-button type="text">退出</el-button>
+                        <el-button type="text" @click="logout">退出</el-button>
                     </div>
                 </el-header>
                 <el-main>
@@ -55,15 +55,32 @@
     </div>
 </template>
 <script>
+import {getMenuList} from '@/api'
 export default {
     data() {
         return {
-            isCollapse: false
+            isCollapse: false,
+            menuList: ''
         };
+    },
+    created(){
+        this.initMunu();
     },
     methods:{
         toggleMenu(){
             this.isCollapse = !this.isCollapse;
+        },
+        initMunu(){
+            getMenuList().then(res => {
+                if(res.meta.status === 200){
+                    this.menuList = res.data;
+                }
+            })
+        },
+        logout(){
+            localStorage.removeItem('mytoken');
+            localStorage.removeItem('username');
+            this.$router.push({name:'login'});
         }
     }
 };

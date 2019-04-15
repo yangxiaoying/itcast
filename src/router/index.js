@@ -22,9 +22,9 @@ export default new Router({
       component: home,
       redirect: {name:'user'},
       children:[
-        {path: '/user',name: 'user',component: user},
-        {path: '/right',name: 'right',component: right},
-        {path: '/role',name: 'role',component: role}
+        {path: '/users',name: 'user',component: user},
+        {path: '/rights',name: 'right',component: right},
+        {path: '/roles',name: 'role',component: role}
       ]
     }
   ]
